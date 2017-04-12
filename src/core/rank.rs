@@ -38,21 +38,21 @@ pub enum Rank {
 /// to a straight.
 fn rank_straight(value_set: u32) -> Option<u32> {
     // simd and statics don't mix yet.
-    let high_straights = u16x8::new(0b11111 << 8, // 10 - A
-                                    0b11111 << 7, // 9 - k
-                                    1 << 15, // Not possible
-                                    1 << 15, // Not possible
-                                    1 << 15, // Not possible
-                                    1 << 15, // Not possible
-                                    1 << 15, // Not possible
-                                    1 << 15); // Not possible
-    let low_straights = u16x8::new(0b11111 << 6, // 8 - Q
-                                   0b11111 << 5, // 7 - J
-                                   0b11111 << 4, // 6 - T
-                                   0b11111 << 3, // 5 - 9
-                                   0b11111 << 2, // 4 - 8
-                                   0b11111 << 1, // 3 - 7
-                                   0b11111 << 0, // 2 - 6
+    let high_straights = u16x8::new(0b11111 << 8,    // 10 - A
+                                    0b11111 << 7,    // 9 - k
+                                    1 << 15,         // Not possible
+                                    1 << 15,         // Not possible
+                                    1 << 15,         // Not possible
+                                    1 << 15,         // Not possible
+                                    1 << 15,         // Not possible
+                                    1 << 15);        // Not possible
+    let low_straights = u16x8::new(0b11111 << 6,     // 8 - Q
+                                   0b11111 << 5,     // 7 - J
+                                   0b11111 << 4,     // 6 - T
+                                   0b11111 << 3,     // 5 - 9
+                                   0b11111 << 2,     // 4 - 8
+                                   0b11111 << 1,     // 3 - 7
+                                   0b11111,          // 2 - 6
                                    0b1000000001111); // wheel
     // Create the initial value.
     let search = u16x8::splat(value_set as u16);
