@@ -14,6 +14,9 @@
 //! * Holdem Game State.
 //! * Multi-threading
 
+extern crate simd;
+extern crate rand;
+
 /// Allow all the core poker functionality to be used
 /// externally. Everything in core should be agnostic
 /// to poker style.

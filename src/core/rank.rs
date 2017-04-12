@@ -1,5 +1,7 @@
 use core::hand::Hand;
 use core::card::Card;
+use std::ops::BitAnd;
+use simd::u16x8;
 
 /// All the different possible hand ranks.
 /// For each hand rank the u32 corresponds to
@@ -28,7 +30,6 @@ pub enum Rank {
     StraightFlush(u32),
 }
 
-const WHEEL: u32 = 0b1000000001111;
 /// Given a bitset of hand ranks. This method
 /// will determine if there's a staright, and will give the
 /// rank. Wheel is the lowest, broadway is the highest value.
@@ -36,41 +37,45 @@ const WHEEL: u32 = 0b1000000001111;
 /// Returns None if the hand ranks represented don't correspond
 /// to a straight.
 fn rank_straight(value_set: u32) -> Option<u32> {
-    // Example of something with a straight:
-    //       0000111111100
-    //       0001111111000
-    //       0011111110000
-    //       0111111100000
-    //       1111111000000
-    //       -------------
-    //       0000111000000
-    //
-    // So there were seven ones in a row
-    // we removed the bottom 4.
-    //
-    // Now an example of an almost straight:
-    //
-    //       0001110111100
-    //       0011101111000
-    //       0111011110000
-    //       1110111100000
-    //       1101111000000
-    //       -------------
-    //       0000000000000
-    let left = value_set & (value_set << 1) & (value_set << 2) & (value_set << 3) &
-               (value_set << 4);
-    //
-    // Now count the leading 0's
-    let idx = left.leading_zeros();
-    // If this isn't all zeros then we found a straight
-    if idx < 32 {
-        return Some(32 - 4 - idx);
-    } else if value_set & WHEEL == WHEEL {
-        // Check to see if this is the wheel. It's pretty unlikely.
-        return Some(0);
-    } else {
-        None
+    // simd and statics don't mix yet.
+    let high_straights = u16x8::new(0b11111 << 8, // 10 - A
+                                    0b11111 << 7, // 9 - k
+                                    1 << 15, // Not possible
+                                    1 << 15, // Not possible
+                                    1 << 15, // Not possible
+                                    1 << 15, // Not possible
+                                    1 << 15, // Not possible
+                                    1 << 15); // Not possible
+    let low_straights = u16x8::new(0b11111 << 6, // 8 - Q
+                                   0b11111 << 5, // 7 - J
+                                   0b11111 << 4, // 6 - T
+                                   0b11111 << 3, // 5 - 9
+                                   0b11111 << 2, // 4 - 8
+                                   0b11111 << 1, // 3 - 7
+                                   0b11111 << 0, // 2 - 6
+                                   0b1000000001111); // wheel
+    // Create the initial value.
+    let search = u16x8::splat(value_set as u16);
+    // Now compare the high straights.
+    let high = search.bitand(high_straights).eq(high_straights);
+    // If we found a match return it.
+    if high.any() {
+        if high.extract(0) {
+            return Some(9);
+        } else if high.extract(1) {
+            return Some(8);
+        }
     }
+    // otherwise search the low straights
+    let low = search.bitand(low_straights).eq(low_straights);
+    if low.any() {
+        for i in 0..8 {
+            if low.extract(i) {
+                return Some(7 - i);
+            }
+        }
+    }
+    None
 }
 /// Keep only the most signifigant bit.
 fn keep_highest(rank: u32) -> u32 {

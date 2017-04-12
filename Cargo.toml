@@ -13,6 +13,7 @@ license = "Apache-2.0"
 
 [dependencies]
 rand = "0.3"
+simd = "0.2.0"
 
 [badges]
 travis-ci = { repository = "elliottneilclark/rs-poker" }

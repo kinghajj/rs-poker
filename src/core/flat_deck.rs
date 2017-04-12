@@ -2,8 +2,7 @@ use std::ops::{Index, Range, RangeTo, RangeFrom, RangeFull};
 use core::card::Card;
 use core::deck::Deck;
 
-extern crate rand;
-use self::rand::{thread_rng, sample, Rng};
+use rand::{thread_rng, sample, Rng};
 
 /// `FlatDeck` is a deck of cards that allows easy
 /// indexing into the cards. It does not provide
