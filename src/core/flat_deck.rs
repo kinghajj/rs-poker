@@ -6,10 +6,12 @@ extern crate rand;
 use rand::seq::*;
 use rand::thread_rng;
 
+use serde::{Deserialize, Serialize};
+
 /// `FlatDeck` is a deck of cards that allows easy
 /// indexing into the cards. It does not provide
 /// contains methods.
-#[derive(Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct FlatDeck {
     /// Card storage.
     cards: Vec<Card>,

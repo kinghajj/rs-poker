@@ -4,11 +4,13 @@ use std::ops::Index;
 use std::ops::{RangeFrom, RangeFull, RangeTo};
 use std::slice::Iter;
 
+use serde::{Deserialize, Serialize};
+
 /// Struct to hold cards.
 ///
 /// This doesn't have the ability to easily check if a card is
 /// in the hand. So do that before adding/removing a card.
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Deserialize, Serialize, Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Hand {
     /// Where all the cards are placed un-ordered.
     cards: Vec<Card>,

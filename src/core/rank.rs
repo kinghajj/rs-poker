@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 use crate::core::card::Card;
 use crate::core::hand::Hand;
 
@@ -5,7 +7,7 @@ use crate::core::hand::Hand;
 /// For each hand rank the u32 corresponds to
 /// the strength of the hand in comparison to others
 /// of the same rank.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum Rank {
     /// The lowest rank.
     /// No matches

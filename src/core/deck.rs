@@ -2,8 +2,10 @@ use crate::core::card::{Card, Suit, Value};
 use std::collections::hash_set::{IntoIter, Iter};
 use std::collections::HashSet;
 
+use serde::{Deserialize, Serialize};
+
 /// Deck struct that can tell quickly if a card is in the deck
-#[derive(Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Deck {
     /// Card storage.
     /// Used to figure out quickly
